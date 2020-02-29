@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 
 import {
   Card,
@@ -10,7 +10,12 @@ import {
   IconButton,
   makeStyles
 } from "@material-ui/core";
-import { PlayArrow, QueuePlayNext } from "@material-ui/icons";
+import { PlayArrow, QueuePlayNext, Pause } from "@material-ui/icons";
+import { useSubscription, useMutation } from "@apollo/react-hooks";
+import { GET_SONGS } from "../graphql/subscriptions";
+import { SongContext } from "../App";
+import { useEffect } from "react";
+import { ADD_OR_REMOVE_FROM_QUEUED_SONGS } from "../graphql/mutations";
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -29,17 +34,26 @@ const useStyles = makeStyles(theme => ({
     width: 150,
     height: 150,
     objectFit: "cover"
+  },
+  error: {
+    color: "warning"
   }
 }));
 
 const SongList = () => {
-  let loading = false;
-
-  const song = {
-    title: "Just a dummy title",
-    artist: "Dummy Dumm",
-    thumbnail: "http://i.ytimg.com/vi/RJjiNnB_eVo/hqdefault.jpg"
-  };
+  const { data, loading, error } = useSubscription(GET_SONGS);
+  const [addOrRemoveFromQueuedSongs] = useMutation(
+    ADD_OR_REMOVE_FROM_QUEUED_SONGS,
+    {
+      onCompleted: data => {
+        localStorage.setItem(
+          "queuedSongs",
+          JSON.stringify(data.addOrRemoveFromQueuedSongs)
+        );
+      }
+    }
+  );
+  const classes = useStyles();
 
   if (loading) {
     return (
@@ -56,17 +70,46 @@ const SongList = () => {
       </div>
     );
   }
+
+  if (error) {
+    return (
+      <div className={classes.error}>
+        Error fetching Songs... , {error.message}
+      </div>
+    );
+  }
   return (
     <div>
-      {Array.from({ length: 10 }, () => song).map((song, i) => (
-        <Song key={i} song={song} />
+      {data.songs.map(song => (
+        <Song key={song.id} {...song} />
       ))}
     </div>
   );
 
-  function Song({ song }) {
+  function Song({ ...song }) {
     const classes = useStyles();
-    const { title, artist, thumbnail } = song;
+    const { id, title, artist, thumbnail } = song;
+    const [isCurrentSongPlaying, setIsCurrentSongPlaying] = useState(false);
+    const { state, dispatch } = useContext(SongContext);
+
+    useEffect(() => {
+      const isSongPLaying = state.isPlaying && id === state.song.id;
+      setIsCurrentSongPlaying(isSongPLaying);
+    }, [id, state.song.id, state.isPlaying]);
+
+    const handlePlaySong = () => {
+      dispatch({ type: "SET_SONG", payload: { song } });
+      dispatch(
+        state.isPlaying ? { type: "PAUSE_SONG" } : { type: "PLAY_SONG" }
+      );
+    };
+
+    const handleOrRemoveFromQueuedSongs = () => {
+      addOrRemoveFromQueuedSongs({
+        variables: { input: { ...song }, __typename: "Song" }
+      });
+    };
+
     return (
       <Card className={classes.container}>
         <div className={classes.songInfoContainer}>
@@ -81,10 +124,14 @@ const SongList = () => {
               </Typography>
             </CardContent>
             <CardActions>
-              <IconButton size="small" color="primary">
-                <PlayArrow />
+              <IconButton size="small" color="primary" onClick={handlePlaySong}>
+                {isCurrentSongPlaying ? <Pause /> : <PlayArrow />}
               </IconButton>
-              <IconButton size="small" color="secondary">
+              <IconButton
+                size="small"
+                color="secondary"
+                onClick={handleOrRemoveFromQueuedSongs}
+              >
                 <QueuePlayNext />
               </IconButton>
             </CardActions>

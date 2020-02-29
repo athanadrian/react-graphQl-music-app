@@ -1,4 +1,5 @@
 import React from "react";
+import { useMutation } from "@apollo/react-hooks";
 import {
   Typography,
   IconButton,
@@ -6,8 +7,9 @@ import {
   Avatar,
   useMediaQuery
 } from "@material-ui/core";
-
 import { Delete } from "@material-ui/icons";
+
+import { ADD_OR_REMOVE_FROM_QUEUED_SONGS } from "../graphql/mutations";
 
 const useStyles = makeStyles({
   container: {
@@ -32,13 +34,8 @@ const useStyles = makeStyles({
   }
 });
 
-const QueuedSongList = () => {
+const QueuedSongList = ({ queuedSongs }) => {
   const greaterThanMd = useMediaQuery(theme => theme.breakpoints.up("md"));
-  const queuedSong = {
-    title: "dummy song",
-    artist: "dummy artist",
-    thumbnail: "http://i.ytimg.com/vi/RJjiNnB_eVo/hqdefault.jpg"
-  };
 
   return (
     greaterThanMd && (
@@ -47,11 +44,11 @@ const QueuedSongList = () => {
           margin: "10px 0"
         }}
       >
-        <Typography variant="h5" component="h6">
-          QUEUED (5)
+        <Typography variant="button" color="textSecondary">
+          QUEUED ({queuedSongs.length})
         </Typography>
-        {Array.from({ length: 5 }, () => queuedSong).map((qSong, i) => (
-          <QueuedSong key={i} qSong={qSong} />
+        {queuedSongs.map((qSong, i) => (
+          <QueuedSong key={qSong.id} qSong={qSong} />
         ))}
       </div>
     )
@@ -61,6 +58,24 @@ const QueuedSongList = () => {
 function QueuedSong({ qSong }) {
   const classes = useStyles();
   const { title, artist, thumbnail } = qSong;
+  const [addOrRemoveFromQueuedSongs] = useMutation(
+    ADD_OR_REMOVE_FROM_QUEUED_SONGS,
+    {
+      onCompleted: data => {
+        localStorage.setItem(
+          "queuedSongs",
+          JSON.stringify(data.addOrRemoveFromQueuedSongs)
+        );
+      }
+    }
+  );
+
+  const handleOrRemoveFromQueuedSongs = () => {
+    addOrRemoveFromQueuedSongs({
+      variables: { input: { ...qSong }, __typename: "Song" }
+    });
+  };
+
   return (
     <div className={classes.container}>
       <Avatar className={classes.avatar} src={thumbnail} />
@@ -76,7 +91,11 @@ function QueuedSong({ qSong }) {
           {artist}
         </Typography>
       </div>
-      <IconButton size="small" color="secondary">
+      <IconButton
+        size="small"
+        color="secondary"
+        onClick={handleOrRemoveFromQueuedSongs}
+      >
         <Delete color="error" />
       </IconButton>
     </div>

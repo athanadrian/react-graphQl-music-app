@@ -1,16 +1,34 @@
-import React from "react";
+import React, { createContext, useContext, useReducer } from "react";
+
+import { Grid, useMediaQuery, Hidden } from "@material-ui/core";
+
 import Header from "./components/Header";
 import SongList from "./components/SongList";
 import SongPlayer from "./components/SongPlayer";
 import AddSong from "./components/AddSong";
 
-import { Grid, useMediaQuery, Hidden } from "@material-ui/core";
+import songReducer from "./reducer";
+
+export const SongContext = createContext({
+  song: {
+    id: "e072fcf2-30a3-4aff-85d1-068656a68daf",
+    title: "Promenade",
+    artist: "LÜNE",
+    thumbnail: "http://img.youtube.com/vi/7G6uq5dyPSY/0.jpg",
+    url: "https://www.youtube.com/watch?v=7G6uq5dyPSY",
+    duration: 257
+  },
+  isPlaying: false
+});
 
 function App() {
+  const initialSongState = useContext(SongContext);
+  const [state, dispatch] = useReducer(songReducer, initialSongState);
+
   const greaterThanSm = useMediaQuery(theme => theme.breakpoints.up("sm"));
   const greaterThanMd = useMediaQuery(theme => theme.breakpoints.up("md"));
   return (
-    <>
+    <SongContext.Provider value={{ state, dispatch }}>
       {/*     1st way to hide an alement
       {greaterThanSm && <Header />} */}
       <Hidden only="xs">
@@ -49,7 +67,7 @@ function App() {
           <SongPlayer />
         </Grid>
       </Grid>
-    </>
+    </SongContext.Provider>
   );
 }
 
