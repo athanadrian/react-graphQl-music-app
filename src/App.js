@@ -12,11 +12,13 @@ import songReducer from "./reducer";
 export const SongContext = createContext({
   song: {
     id: "e072fcf2-30a3-4aff-85d1-068656a68daf",
-    title: "Promenade",
-    artist: "LÜNE",
-    thumbnail: "http://img.youtube.com/vi/7G6uq5dyPSY/0.jpg",
-    url: "https://www.youtube.com/watch?v=7G6uq5dyPSY",
-    duration: 257
+    title: "City of angels (funky remix)",
+    artist: "Maria Victoria",
+    thumbnail:
+      "https://i1.sndcdn.com/artworks-000693990808-eb5lt4-t500x500.jpg",
+    url:
+      "https://soundcloud.com/maria-victoria-401466296/city-of-angels-funky-remix-24k",
+    duration: 124.003
   },
   isPlaying: false
 });

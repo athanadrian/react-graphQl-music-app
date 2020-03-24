@@ -21,7 +21,7 @@ const Header = () => {
       <Toolbar>
         <Headset />
         <Typography className={classes.title} variant="h6" component="h1">
-          Atana Music Share
+          Naya-Chloe Music Share
         </Typography>
       </Toolbar>
     </AppBar>
