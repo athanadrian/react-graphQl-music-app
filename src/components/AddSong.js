@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useMutation } from "@apollo/react-hooks";
+import React, { useState, useEffect } from 'react';
+import { useMutation } from '@apollo/react-hooks';
 import {
   TextField,
   InputAdornment,
@@ -9,18 +9,18 @@ import {
   DialogContent,
   DialogActions,
   makeStyles
-} from "@material-ui/core";
-import { Link, AddBoxOutlined } from "@material-ui/icons";
-import ReactPlayer from "react-player";
-import SoundCloudPlayer from "react-player/lib/players/SoundCloud";
-import YoutubePlayer from "react-player/lib/players/YouTube";
+} from '@material-ui/core';
+import { Link, AddBoxOutlined } from '@material-ui/icons';
+import ReactPlayer from 'react-player';
+import SoundCloudPlayer from 'react-player/lib/players/SoundCloud';
+import YoutubePlayer from 'react-player/lib/players/YouTube';
 
-import { ADD_SONG } from "../graphql/mutations";
+import { ADD_SONG } from '../graphql/mutations';
 
 const useStyles = makeStyles(theme => ({
   container: {
-    display: "flex",
-    alignItems: "center"
+    display: 'flex',
+    alignItems: 'center'
   },
   inputUrl: {
     margin: theme.spacing(1)
@@ -29,18 +29,18 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(1)
   },
   dialog: {
-    textAlign: "center"
+    textAlign: 'center'
   },
   thumbnail: {
-    width: "90%"
+    width: '90%'
   }
 }));
 
 const DEFAULT_SONG = {
   duration: 0,
-  title: "",
-  artist: "",
-  thumbnail: ""
+  title: '',
+  artist: '',
+  thumbnail: ''
 };
 
 const AddSong = () => {
@@ -49,11 +49,10 @@ const AddSong = () => {
   const [playable, setPlayable] = useState(false);
   const [song, setSong] = useState(DEFAULT_SONG);
   const [dialog, setDialog] = useState(false);
-  const [url, setUrl] = useState("");
+  const [url, setUrl] = useState('');
 
   useEffect(() => {
-    const isPlayable =
-      SoundCloudPlayer.canPlay(url) || YoutubePlayer.canPlay(url);
+    const isPlayable = SoundCloudPlayer.canPlay(url) || YoutubePlayer.canPlay(url);
     setPlayable(isPlayable);
   }, [url]);
 
@@ -104,9 +103,9 @@ const AddSong = () => {
       });
       handleDialog();
       setSong(DEFAULT_SONG);
-      setUrl("");
+      setUrl('');
     } catch (err) {
-      console.error("Error adding song: ", err.message);
+      console.error('Error adding song: ', err.message);
     }
   };
 
@@ -134,7 +133,7 @@ const AddSong = () => {
             duration: Number(songData.duration / 1000),
             title: songData.title,
             artist: songData.user.username,
-            thumbnail: songData.artwork_url.replace("-large", "-t500x500")
+            thumbnail: songData.artwork_url.replace('-large', '-t500x500')
           });
         }
       });
@@ -147,11 +146,7 @@ const AddSong = () => {
       <Dialog className={classes.dialog} open={dialog} onClose={handleDialog}>
         <DialogTitle>Edit</DialogTitle>
         <DialogContent>
-          <img
-            className={classes.thumbnail}
-            src={thumbnail}
-            alt="Song Thumbnail"
-          />
+          <img className={classes.thumbnail} src={thumbnail} alt="Song Thumbnail" />
           <TextField
             margin="dense"
             name="title"
@@ -159,8 +154,8 @@ const AddSong = () => {
             fullWidth
             value={title}
             onChange={handleSongChange}
-            error={handleError("title")}
-            helperText={handleError("title") && "Fill out Field."}
+            error={handleError('title')}
+            helperText={handleError('title') && 'Fill out Field.'}
           />
           <TextField
             margin="dense"
@@ -169,8 +164,8 @@ const AddSong = () => {
             fullWidth
             value={artist}
             onChange={handleSongChange}
-            error={handleError("artist")}
-            helperText={handleError("artist") && "Fill out Field."}
+            error={handleError('artist')}
+            helperText={handleError('artist') && 'Fill out Field.'}
           />
           <TextField
             margin="dense"
@@ -179,8 +174,8 @@ const AddSong = () => {
             fullWidth
             value={thumbnail}
             onChange={handleSongChange}
-            error={handleError("thumbnail")}
-            helperText={handleError("thumbnail") && "Fill out Field."}
+            error={handleError('thumbnail')}
+            helperText={handleError('thumbnail') && 'Fill out Field.'}
           />
         </DialogContent>
         <DialogActions>

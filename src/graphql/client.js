@@ -10,15 +10,15 @@
 
 //***Use Subscriptions with ApolloClient from apollo-client
 
-import ApolloClient from "apollo-client";
-import { WebSocketLink } from "apollo-link-ws";
-import { InMemoryCache } from "apollo-cache-inmemory";
-import { gql } from "apollo-boost";
-import { GET_QUEUED_SONGS } from "./queries";
+import ApolloClient from 'apollo-client';
+import { WebSocketLink } from 'apollo-link-ws';
+import { InMemoryCache } from 'apollo-cache-inmemory';
+import { gql } from 'apollo-boost';
+import { GET_QUEUED_SONGS } from './queries';
 
 const client = new ApolloClient({
   link: new WebSocketLink({
-    uri: "wss://atana-music-app.herokuapp.com/v1/graphql",
+    uri: 'wss://atana-music-app.herokuapp.com/v1/graphql',
     options: {
       reconnect: true
     }
@@ -56,9 +56,7 @@ const client = new ApolloClient({
         });
         if (queryResult) {
           const { queuedSongs } = queryResult;
-          const isInQueuedSongs = queuedSongs.some(
-            song => song.id === input.id
-          );
+          const isInQueuedSongs = queuedSongs.some(song => song.id === input.id);
           const newQueuedSongs = isInQueuedSongs
             ? queuedSongs.filter(song => song.id !== input.id)
             : [...queuedSongs, input];
@@ -74,12 +72,10 @@ const client = new ApolloClient({
   }
 });
 
-const hasQueuedSongs = Boolean(localStorage.getItem("queuedSongs"));
+const hasQueuedSongs = Boolean(localStorage.getItem('queuedSongs'));
 
 const data = {
-  queuedSongs: hasQueuedSongs
-    ? JSON.parse(localStorage.getItem("queuedSongs"))
-    : []
+  queuedSongs: hasQueuedSongs ? JSON.parse(localStorage.getItem('queuedSongs')) : []
 };
 
 client.writeData({ data });

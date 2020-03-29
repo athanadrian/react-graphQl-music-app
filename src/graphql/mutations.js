@@ -1,4 +1,4 @@
-import { gql } from "apollo-boost";
+import { gql } from 'apollo-boost';
 
 export const ADD_OR_REMOVE_FROM_QUEUED_SONGS = gql`
   mutation addOrRemoveFromQueuedSongs($input: SongInput) {

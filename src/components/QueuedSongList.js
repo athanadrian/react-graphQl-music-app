@@ -1,32 +1,32 @@
-import React from "react";
-import { useMutation } from "@apollo/react-hooks";
+import React from 'react';
+import { useMutation } from '@apollo/react-hooks';
 import {
   Typography,
   IconButton,
   makeStyles,
   Avatar,
   useMediaQuery
-} from "@material-ui/core";
-import { Delete } from "@material-ui/icons";
+} from '@material-ui/core';
+import { Delete } from '@material-ui/icons';
 
-import { ADD_OR_REMOVE_FROM_QUEUED_SONGS } from "../graphql/mutations";
+import { ADD_OR_REMOVE_FROM_QUEUED_SONGS } from '../graphql/mutations';
 
 const useStyles = makeStyles({
   container: {
-    width: "100%",
-    display: "grid",
-    gridAutoFlow: "column",
-    gridTemplateColumns: "50px auto 50px",
-    alignItems: "center",
+    width: '100%',
+    display: 'grid',
+    gridAutoFlow: 'column',
+    gridTemplateColumns: '50px auto 50px',
+    alignItems: 'center',
     marginTop: 10
   },
   text: {
-    overflow: "hidden",
-    textOverflow: "ellipsis"
+    overflow: 'hidden',
+    textOverflow: 'ellipsis'
   },
   songInfoContainer: {
-    overflow: "hidden",
-    whiteSpace: "nowrap"
+    overflow: 'hidden',
+    whiteSpace: 'nowrap'
   },
   avatar: {
     width: 44,
@@ -35,13 +35,13 @@ const useStyles = makeStyles({
 });
 
 const QueuedSongList = ({ queuedSongs }) => {
-  const greaterThanMd = useMediaQuery(theme => theme.breakpoints.up("md"));
+  const greaterThanMd = useMediaQuery(theme => theme.breakpoints.up('md'));
 
   return (
     greaterThanMd && (
       <div
         style={{
-          margin: "10px 0"
+          margin: '10px 0'
         }}
       >
         <Typography variant="button" color="textSecondary">
@@ -58,21 +58,18 @@ const QueuedSongList = ({ queuedSongs }) => {
 function QueuedSong({ qSong }) {
   const classes = useStyles();
   const { title, artist, thumbnail } = qSong;
-  const [addOrRemoveFromQueuedSongs] = useMutation(
-    ADD_OR_REMOVE_FROM_QUEUED_SONGS,
-    {
-      onCompleted: data => {
-        localStorage.setItem(
-          "queuedSongs",
-          JSON.stringify(data.addOrRemoveFromQueuedSongs)
-        );
-      }
+  const [addOrRemoveFromQueuedSongs] = useMutation(ADD_OR_REMOVE_FROM_QUEUED_SONGS, {
+    onCompleted: data => {
+      localStorage.setItem(
+        'queuedSongs',
+        JSON.stringify(data.addOrRemoveFromQueuedSongs)
+      );
     }
-  );
+  });
 
   const handleOrRemoveFromQueuedSongs = () => {
     addOrRemoveFromQueuedSongs({
-      variables: { input: { ...qSong }, __typename: "Song" }
+      variables: { input: { ...qSong }, __typename: 'Song' }
     });
   };
 
@@ -83,19 +80,11 @@ function QueuedSong({ qSong }) {
         <Typography variant="subtitle2" className={classes.text}>
           {title}
         </Typography>
-        <Typography
-          variant="body2"
-          color="textSecondary"
-          className={classes.text}
-        >
+        <Typography variant="body2" color="textSecondary" className={classes.text}>
           {artist}
         </Typography>
       </div>
-      <IconButton
-        size="small"
-        color="secondary"
-        onClick={handleOrRemoveFromQueuedSongs}
-      >
+      <IconButton size="small" color="secondary" onClick={handleOrRemoveFromQueuedSongs}>
         <Delete color="error" />
       </IconButton>
     </div>

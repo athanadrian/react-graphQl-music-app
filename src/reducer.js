@@ -1,18 +1,18 @@
 const songReducer = (state, action) => {
   switch (action.type) {
-    case "PLAY_SONG": {
+    case 'PLAY_SONG': {
       return {
         ...state,
         isPlaying: true
       };
     }
-    case "PAUSE_SONG": {
+    case 'PAUSE_SONG': {
       return {
         ...state,
         isPlaying: false
       };
     }
-    case "SET_SONG": {
+    case 'SET_SONG': {
       return {
         ...state,
         song: action.payload.song

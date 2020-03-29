@@ -1,5 +1,5 @@
-import React, { useState, useContext, useRef } from "react";
-import { useQuery } from "@apollo/react-hooks";
+import React, { useState, useContext, useRef } from 'react';
+import { useQuery } from '@apollo/react-hooks';
 import {
   Card,
   CardContent,
@@ -8,34 +8,34 @@ import {
   makeStyles,
   Slider,
   CardMedia
-} from "@material-ui/core";
-import { PlayArrow, SkipPrevious, SkipNext, Pause } from "@material-ui/icons";
-import ReactPlayer from "react-player";
+} from '@material-ui/core';
+import { PlayArrow, SkipPrevious, SkipNext, Pause } from '@material-ui/icons';
+import ReactPlayer from 'react-player';
 
-import { SongContext } from "../App";
-import { GET_QUEUED_SONGS } from "../graphql/queries";
-import QueuedSongList from "./QueuedSongList";
-import { useEffect } from "react";
+import { SongContext } from '../App';
+import { GET_QUEUED_SONGS } from '../graphql/queries';
+import QueuedSongList from './QueuedSongList';
+import { useEffect } from 'react';
 
 const userStyles = makeStyles(theme => ({
   container: {
-    display: "flex",
-    justifyContent: "space-between"
+    display: 'flex',
+    justifyContent: 'space-between'
   },
   details: {
-    display: "flex",
-    flexDirection: "column",
-    padding: "0px 15px"
+    display: 'flex',
+    flexDirection: 'column',
+    padding: '0px 15px'
   },
   content: {
-    flex: "1 0 auto"
+    flex: '1 0 auto'
   },
   thumbnail: {
     width: 150
   },
   controls: {
-    display: "flex",
-    alignItems: "center",
+    display: 'flex',
+    alignItems: 'center',
     paddingLeft: theme.spacing(1),
     paddingRight: theme.spacing(1)
   },
@@ -56,9 +56,7 @@ const SongPlayer = () => {
   const classes = userStyles();
 
   useEffect(() => {
-    const songIndex = data.queuedSongs.findIndex(
-      song => song.id === state.song.id
-    );
+    const songIndex = data.queuedSongs.findIndex(song => song.id === state.song.id);
     setPositionInQueuedSongs(songIndex);
   }, [data.queuedSongs, state.song.id]);
 
@@ -66,12 +64,12 @@ const SongPlayer = () => {
     const nextSong = data.queuedSongs[positionInQueuedSongs + 1];
     if (played >= 0.99 && nextSong) {
       setPlayed(0);
-      dispatch({ type: "SET_SONG", payload: { song: nextSong } });
+      dispatch({ type: 'SET_SONG', payload: { song: nextSong } });
     }
   }, [data.queuedSongs, played, dispatch, positionInQueuedSongs]);
 
   const handlePlaySong = () => {
-    dispatch(state.isPlaying ? { type: "PAUSE_SONG" } : { type: "PLAY_SONG" });
+    dispatch(state.isPlaying ? { type: 'PAUSE_SONG' } : { type: 'PLAY_SONG' });
   };
 
   const handleSliderProgressChange = (e, newValue) => {
@@ -95,14 +93,14 @@ const SongPlayer = () => {
   const handlePlayPreviousSong = () => {
     const previousSong = data.queuedSongs[positionInQueuedSongs - 1];
     if (previousSong) {
-      dispatch({ type: "SET_SONG", payload: { song: previousSong } });
+      dispatch({ type: 'SET_SONG', payload: { song: previousSong } });
     }
   };
 
   const handlePlayNextSong = () => {
     const nextSong = data.queuedSongs[positionInQueuedSongs + 1];
     if (nextSong) {
-      dispatch({ type: "SET_SONG", payload: { song: nextSong } });
+      dispatch({ type: 'SET_SONG', payload: { song: nextSong } });
     }
   };
 
