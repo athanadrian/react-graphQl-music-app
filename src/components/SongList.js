@@ -126,24 +126,6 @@ const SongList = () => {
       });
     };
 
-    // const handleDeleteTodo = async ({ id }) => {
-    //   const isConfirmed = window.confirm("You want to delete it?");
-    //   if (isConfirmed) {
-    //     const data = await deleteTodo({
-    //       variables: { id },
-    //       update: cashe => {
-    //         const prevData = cashe.readQuery({ query: GET_TODOS });
-    //         const updatedTodos = prevData.todos.filter(todo => todo.id !== id);
-    //         cashe.writeQuery({
-    //           query: GET_TODOS,
-    //           data: { todos: updatedTodos }
-    //         });
-    //       }
-    //     });
-    //     console.log("delete todo ", data);
-    //   }
-    // };
-
     const handleDeleteSongFromList = async ({ id }) => {
       const isConfirmed = window.confirm("You want to delete it?");
       if (isConfirmed) {
