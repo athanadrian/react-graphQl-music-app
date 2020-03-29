@@ -10,12 +10,20 @@ import {
   IconButton,
   makeStyles
 } from "@material-ui/core";
-import { PlayArrow, QueuePlayNext, Pause } from "@material-ui/icons";
+import {
+  PlayArrow,
+  QueuePlayNext,
+  Pause,
+  HighlightOff
+} from "@material-ui/icons";
 import { useSubscription, useMutation } from "@apollo/react-hooks";
 import { GET_SONGS } from "../graphql/subscriptions";
 import { SongContext } from "../App";
 import { useEffect } from "react";
-import { ADD_OR_REMOVE_FROM_QUEUED_SONGS } from "../graphql/mutations";
+import {
+  ADD_OR_REMOVE_FROM_QUEUED_SONGS,
+  DELETE_SONG
+} from "../graphql/mutations";
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -53,6 +61,14 @@ const SongList = () => {
       }
     }
   );
+  const [deleteSongFromList] = useMutation(DELETE_SONG, {
+    onCompleted: data => {
+      localStorage.setItem(
+        "deletedSongs",
+        JSON.stringify(data.deleteSongFromList)
+      );
+    }
+  });
   const classes = useStyles();
 
   if (loading) {
@@ -110,6 +126,35 @@ const SongList = () => {
       });
     };
 
+    // const handleDeleteTodo = async ({ id }) => {
+    //   const isConfirmed = window.confirm("You want to delete it?");
+    //   if (isConfirmed) {
+    //     const data = await deleteTodo({
+    //       variables: { id },
+    //       update: cashe => {
+    //         const prevData = cashe.readQuery({ query: GET_TODOS });
+    //         const updatedTodos = prevData.todos.filter(todo => todo.id !== id);
+    //         cashe.writeQuery({
+    //           query: GET_TODOS,
+    //           data: { todos: updatedTodos }
+    //         });
+    //       }
+    //     });
+    //     console.log("delete todo ", data);
+    //   }
+    // };
+
+    const handleDeleteSongFromList = async ({ id }) => {
+      const isConfirmed = window.confirm("You want to delete it?");
+      if (isConfirmed) {
+        const data = await deleteSongFromList({
+          variables: { id }
+        });
+        localStorage.setItem("deletedSongs", JSON.stringify(data));
+        console.log("delete song ", data);
+      }
+    };
+
     return (
       <Card className={classes.container}>
         <div className={classes.songInfoContainer}>
@@ -133,6 +178,13 @@ const SongList = () => {
                 onClick={handleOrRemoveFromQueuedSongs}
               >
                 <QueuePlayNext />
+              </IconButton>
+              <IconButton
+                size="small"
+                color="secondary"
+                onClick={() => handleDeleteSongFromList(song)}
+              >
+                <HighlightOff color="error" />
               </IconButton>
             </CardActions>
           </div>
